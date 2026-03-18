@@ -4,9 +4,20 @@
  */
 
 import React, { useState, useEffect, useRef } from 'react';
-import { Code2, Eye, Copy, Trash2, Download, Layout, Maximize2, Minimize2, AlertCircle, CheckCircle2, ChevronDown, ChevronUp } from 'lucide-react';
+import { Code2, Eye, Copy, Trash2, Download, Layout, Maximize2, Minimize2, AlertCircle, CheckCircle2, ChevronDown, ChevronUp, Github, ExternalLink, Sparkles } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { HTMLHint } from 'htmlhint';
+
+// GitHub Corner Component
+const GitHubCorner = ({ url }: { url: string }) => (
+  <a href={url} target="_blank" rel="noopener noreferrer" className="absolute top-0 right-0 z-50 group" aria-label="View source on GitHub">
+    <svg width="80" height="80" viewBox="0 0 250 250" className="fill-indigo-600 text-slate-900 transition-all duration-300 group-hover:fill-indigo-500" aria-hidden="true">
+      <path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z"></path>
+      <path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style={{ transformOrigin: '130px 106px' }} className="octo-arm"></path>
+      <path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.3 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.9 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" className="octo-body"></path>
+    </svg>
+  </a>
+);
 
 export default function App() {
   const [html, setHtml] = useState<string>(`<!DOCTYPE html>
@@ -115,14 +126,15 @@ export default function App() {
       textareaRef.current.focus();
       textareaRef.current.setSelectionRange(charPos, charPos + lines[line - 1].length);
       
-      // Basic scroll to line (approximate)
-      const lineHeight = 20; // Estimated line height in px
+      const lineHeight = 20;
       textareaRef.current.scrollTop = (line - 5) * lineHeight;
     }
   };
 
   return (
-    <div className="flex flex-col h-screen bg-[#0f172a] text-slate-200 font-sans overflow-hidden">
+    <div className="flex flex-col h-screen bg-[#0f172a] text-slate-200 font-sans overflow-hidden relative">
+      <GitHubCorner url="https://github.com" />
+
       {/* Header */}
       <header className="h-14 border-b border-slate-800 flex items-center justify-between px-6 bg-[#0f172a]/80 backdrop-blur-md z-10">
         <div className="flex items-center gap-3">
@@ -132,7 +144,7 @@ export default function App() {
           <h1 className="font-semibold text-lg tracking-tight">Live HTML <span className="text-indigo-400">Previewer</span></h1>
         </div>
         
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 pr-16">
           <button 
             onClick={handleCopy}
             className="p-2 hover:bg-slate-800 rounded-md transition-colors text-slate-400 hover:text-white"
@@ -199,7 +211,6 @@ export default function App() {
           </div>
           
           <div className="flex-1 flex overflow-hidden relative">
-            {/* Line Numbers */}
             <div className="w-12 bg-slate-900/30 border-r border-slate-800/50 flex flex-col items-end pr-3 py-6 text-[10px] font-mono text-slate-600 select-none">
               {html.split('\n').map((_, i) => (
                 <div key={i} className="h-5 leading-5">{i + 1}</div>
@@ -216,7 +227,6 @@ export default function App() {
             />
           </div>
 
-          {/* Error Panel */}
           <AnimatePresence>
             {showErrorPanel && errors.length > 0 && (
               <motion.div 
@@ -285,6 +295,26 @@ export default function App() {
           </div>
         </motion.section>
       </main>
+
+      {/* AI Studio Banner Section */}
+      <section className="bg-indigo-900/20 border-t border-slate-800 px-6 py-4 flex flex-col md:flex-row items-center justify-between gap-4">
+        <div className="flex flex-col">
+          <h2 className="text-lg font-bold text-white flex items-center gap-2">
+            <Sparkles className="w-5 h-5 text-indigo-400" />
+            Built with AI Studio
+          </h2>
+          <p className="text-sm text-slate-400">The fastest path from prompt to production with Gemini.</p>
+        </div>
+        <a 
+          href="https://ai.studio/build" 
+          target="_blank" 
+          rel="noopener noreferrer"
+          className="px-6 py-2 bg-white text-indigo-900 rounded-full font-bold text-sm hover:bg-indigo-50 transition-all flex items-center gap-2 shadow-xl shadow-indigo-500/10"
+        >
+          Start building
+          <ExternalLink size={14} />
+        </a>
+      </section>
 
       {/* Footer / Status Bar */}
       <footer className="h-8 border-t border-slate-800 bg-slate-900 flex items-center justify-between px-4 text-[10px] text-slate-500 font-mono">
